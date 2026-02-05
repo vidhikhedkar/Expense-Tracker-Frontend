@@ -37,11 +37,25 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Your Expenses</h1>
-      <ExpenseForm onSubmit={handleAdd} />
-      {/* <SummaryCard summary={summary} /> */}
-      {/* <ExpenseList expenses={expenses} onDelete={handleDelete} /> */}
+    <div className="pt-24 p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+        Your Expenses
+      </h1>
+
+      {/* Add Expense Form */}
+      <div className="max-w-xl mx-auto mb-8">
+        <ExpenseForm onSubmit={handleAdd} />
+      </div>
+
+      {/* Monthly Summary */}
+      <div className="max-w-xl mx-auto mb-8">
+        <SummaryCard summary={summary} />
+      </div>
+
+      {/* Expenses List */}
+      <div className="max-w-3xl mx-auto">
+        <ExpenseList expenses={expenses} onDelete={handleDelete} />
+      </div>
     </div>
   );
 };

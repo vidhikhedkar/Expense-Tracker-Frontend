@@ -33,13 +33,12 @@ const Navbar = () => {
               <span>Account</span>
             </button>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded shadow-lg">
+              <div className="absolute right-0 mt-2 w-36 bg-white text-black rounded-lg shadow-lg overflow-hidden">
                 <button
                   onClick={handleLogout}
-                  className="flex items-center px-4 py-2 w-full hover:bg-gray-200 rounded"
+                  className="flex items-center px-4 py-2 w-full hover:bg-gray-100 transition"
                 >
-                  <FaSignOutAlt className="mr-2" />
-                  Logout
+                  <FaSignOutAlt className="mr-2" /> Logout
                 </button>
               </div>
             )}

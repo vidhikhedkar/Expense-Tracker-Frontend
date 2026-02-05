@@ -9,25 +9,34 @@ const ExpenseForm = ({ onSubmit, expense }) => {
     date: expense?.date ? expense.date.slice(0, 10) : "",
   });
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
+    setFormData({
+      title: "",
+      amount: "",
+      category: "",
+      description: "",
+      date: "",
+    });
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md mx-auto mt-6"
+      className="bg-white rounded-2xl shadow-lg p-8 space-y-4"
     >
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Add / Edit Expense</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Add Expense</h2>
+
       <input
         name="title"
         placeholder="Title"
         value={formData.title}
         onChange={handleChange}
-        className="border border-gray-300 rounded-lg p-2 mb-3 w-full focus:ring-2 focus:ring-indigo-400"
+        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
       />
       <input
         name="amount"
@@ -35,32 +44,33 @@ const ExpenseForm = ({ onSubmit, expense }) => {
         placeholder="Amount"
         value={formData.amount}
         onChange={handleChange}
-        className="border border-gray-300 rounded-lg p-2 mb-3 w-full focus:ring-2 focus:ring-indigo-400"
+        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
       />
       <input
         name="category"
         placeholder="Category"
         value={formData.category}
         onChange={handleChange}
-        className="border border-gray-300 rounded-lg p-2 mb-3 w-full focus:ring-2 focus:ring-indigo-400"
+        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
       />
       <input
         name="description"
         placeholder="Description"
         value={formData.description}
         onChange={handleChange}
-        className="border border-gray-300 rounded-lg p-2 mb-3 w-full focus:ring-2 focus:ring-indigo-400"
+        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
       />
       <input
         name="date"
         type="date"
         value={formData.date}
         onChange={handleChange}
-        className="border border-gray-300 rounded-lg p-2 mb-4 w-full focus:ring-2 focus:ring-indigo-400"
+        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
       />
+
       <button
         type="submit"
-        className="bg-indigo-600 hover:bg-indigo-700 text-white w-full py-2 rounded-lg shadow transition"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold transition"
       >
         Save Expense
       </button>
