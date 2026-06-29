@@ -36,28 +36,38 @@ const Dashboard = () => {
     fetchSummary();
   };
 
-  return (
-    <div className="pt-24 p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-        Your Expenses
-      </h1>
 
-      {/* Add Expense Form */}
-      <div className="max-w-xl mx-auto mb-8">
-        <ExpenseForm onSubmit={handleAdd} />
+   return (
+    <div className=" bg-slate-100 pt-24 px-6">
+      {/* Heading */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-slate-800">
+          Welcome Back
+        </h1>
+        <p className="text-slate-500 mt-2">
+          Manage your daily expenses here.
+        </p>
       </div>
 
-      {/* Monthly Summary */}
-      <div className="max-w-xl mx-auto mb-8">
+      {/* Form + Summary */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <ExpenseForm onSubmit={handleAdd} />
+        </div>
+
         <SummaryCard summary={summary} />
       </div>
 
-      {/* Expenses List */}
-      <div className="max-w-3xl mx-auto">
-        <ExpenseList expenses={expenses} onDelete={handleDelete} />
+      {/* Expense List */}
+      <div className="mt-10">
+        <ExpenseList
+          expenses={expenses}
+          onDelete={handleDelete}
+        />
       </div>
     </div>
   );
+
 };
 
 export default Dashboard;

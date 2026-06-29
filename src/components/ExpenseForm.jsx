@@ -1,80 +1,151 @@
 import React, { useState } from "react";
+import {
+  Card,
+  Input,
+  InputNumber,
+  Button,
+  DatePicker,
+  Select,
+  Typography,
+  Divider,
+  Space,
+} from "antd";
+import {
+  DollarCircleOutlined,
+  CalendarOutlined,
+  FileTextOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
+import dayjs from "dayjs";
+
+const { Title, Text } = Typography;
+const { TextArea } = Input;
 
 const ExpenseForm = ({ onSubmit, expense }) => {
   const [formData, setFormData] = useState({
     title: expense?.title || "",
-    amount: expense?.amount || "",
+    amount: expense?.amount || 0,
     category: expense?.category || "",
     description: expense?.description || "",
-    date: expense?.date ? expense.date.slice(0, 10) : "",
+    date: expense?.date ? dayjs(expense.date) : null,
   });
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleSubmit = () => {
+    onSubmit({
+      ...formData,
+      date: formData.date
+        ? formData.date.format("YYYY-MM-DD")
+        : "",
+    });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
     setFormData({
       title: "",
-      amount: "",
+      amount: 0,
       category: "",
       description: "",
-      date: "",
+      date: null,
     });
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-2xl shadow-lg p-8 space-y-4"
+    <Card
+      bordered={false}
+      className="rounded-3xl shadow-2xl"
+      style={{
+        borderRadius: 24,
+      }}
     >
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Add Expense</h2>
+      <Title level={3} style={{ marginBottom: 0 }}>
+        Add Expense
+      </Title>
 
-      <input
-        name="title"
-        placeholder="Title"
-        value={formData.title}
-        onChange={handleChange}
-        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
-      />
-      <input
-        name="amount"
-        type="number"
-        placeholder="Amount"
-        value={formData.amount}
-        onChange={handleChange}
-        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
-      />
-      <input
-        name="category"
-        placeholder="Category"
-        value={formData.category}
-        onChange={handleChange}
-        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
-      />
-      <input
-        name="description"
-        placeholder="Description"
-        value={formData.description}
-        onChange={handleChange}
-        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
-      />
-      <input
-        name="date"
-        type="date"
-        value={formData.date}
-        onChange={handleChange}
-        className="w-full p-3 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-400"
-      />
+      <Text type="secondary">
+        Record today's spending in a few seconds.
+      </Text>
 
-      <button
-        type="submit"
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold transition"
+      <Divider />
+      <Space
+        direction="vertical"
+        size="large"
+        style={{ width: "100%" }}
       >
-        Save Expense
-      </button>
-    </form>
+        <Input
+          size="large"
+          placeholder="Expense Title"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData({ ...formData, title: e.target.value })
+          }
+        />
+
+        <InputNumber
+          size="large"
+          style={{ width: "100%" }}
+          prefix="₹"
+          placeholder="Amount"
+          value={formData.amount}
+          onChange={(value) =>
+            setFormData({ ...formData, amount: value })
+          }
+        />
+
+        <Select
+          size="large"
+          placeholder="Select Category"
+          value={formData.category || undefined}
+          onChange={(value) =>
+            setFormData({ ...formData, category: value })
+          }
+          options={[
+            { value: "Food", label: "🍔 Food" },
+            { value: "Shopping", label: "🛍 Shopping" },
+            { value: "Travel", label: "✈ Travel" },
+            { value: "Bills", label: "📄 Bills" },
+            { value: "Health", label: "💊 Health" },
+            { value: "Entertainment", label: "🎬 Entertainment" },
+            { value: "Other", label: "📦 Other" },
+          ]}
+        />
+
+        <DatePicker
+          size="large"
+          style={{ width: "100%" }}
+          placeholder="Expense Date"
+          suffixIcon={<CalendarOutlined />}
+          value={formData.date}
+          onChange={(date) =>
+            setFormData({ ...formData, date })
+          }
+        />
+
+        <TextArea
+          rows={4}
+          placeholder="Description (Optional)"
+          value={formData.description}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              description: e.target.value,
+            })
+          }
+        />
+
+        <Button
+          type="primary"
+          size="large"
+          icon={<DollarCircleOutlined />}
+          block
+          style={{
+            height: 50,
+            borderRadius: 12,
+            fontWeight: 600,
+          }}
+          onClick={handleSubmit}
+        >
+          Save Expense
+        </Button>
+      </Space>
+    </Card>
   );
 };
 

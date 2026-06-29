@@ -1,71 +1,119 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../api/api";
+import { getProfile, loginUser } from "../api/api";
+import { FaWallet } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        await getProfile();
+        navigate("/dashboard");
+      } catch (err) {}
+    };
+
+    checkLogin();
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await loginUser({ email, password });
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+      await loginUser({
+        email,
+        password,
+      });
+
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Login Failed");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-gray-100 to-gray-200 px-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md transform hover:scale-105 transition-all duration-300">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          Login
-        </h2>
+    <div className="py-16 bg-slate-950 relative overflow-hidden flex items-center justify-center px-4">
+
+      {/* Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-175 h-175 bg-indigo-600/20 rounded-full blur-[140px]" />
+      <div className="absolute bottom-0 right-0 w-125 h-125 bg-purple-600/20 rounded-full blur-[120px]" />
+
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8 my-10">
+
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 rounded-2xl bg-linear-to-r from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+            <FaWallet className="text-white text-2xl" />
+          </div>
+        </div>
+
+        <h1 className="text-3xl font-bold text-white text-center">
+          Welcome Back
+        </h1>
+
+        <p className="text-slate-400 text-center mt-2 mb-8">
+          Login to manage your expenses
+        </p>
 
         {error && (
-          <div className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center font-medium">
+          <div className="mb-5 bg-red-500/10 border border-red-500/30 text-red-300 rounded-xl p-3 text-sm text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
+
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            required
+            autoComplete="email"
+            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
           />
+
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-            required
+            autoComplete="current-password"
+            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
           />
+
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold shadow-lg transition"
+            className="w-full py-3 rounded-xl cursor-pointer bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition duration-300"
           >
             Login
           </button>
+
         </form>
 
-        <div className="mt-6 flex justify-between text-sm text-gray-500">
-          <Link to="/forgot-password" className="text-indigo-600 font-medium hover:underline">
+        <div className="flex justify-between mt-6 text-sm">
+
+          <Link
+            to="/forgot-password"
+            className="text-indigo-400 hover:text-indigo-300"
+          >
             Forgot Password?
           </Link>
-          <Link to="/register" className="text-indigo-600 font-medium hover:underline">
+
+          <Link
+            to="/register"
+            className="text-indigo-400 hover:text-indigo-300"
+          >
             Register
           </Link>
         </div>
       </div>
+
     </div>
   );
 };

@@ -1,169 +1,162 @@
-import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaWallet, FaUser, FaSignOutAlt, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  FaWallet,
+  FaSignOutAlt,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
+import { getProfile, logoutUser } from "../api/api";
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-    setDropdownOpen(false);
-    setMobileMenuOpen(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        await getProfile();
+        setLoggedIn(true);
+      } catch {
+        setLoggedIn(false);
+      }
+    };
+
+    checkUser();
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setLoggedIn(false);
+      setMenuOpen(false);
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const isActive = (path) => location.pathname === path;
-
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950 border-b border-slate-900/60 text-white transition-all duration-300">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex justify-between items-center relative">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800">
+      <div className="max-w-7xl mx-auto h-20 flex items-center justify-between px-5">
 
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2.5 group relative z-50">
-          <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-indigo-500/30 transition-colors duration-300 shadow-inner">
-            <FaWallet className="text-indigo-400 group-hover:scale-110 transition-transform duration-300" size={16} />
+        <Link
+          to="/"
+          className="flex items-center gap-3"
+        >
+          <div className="w-11 h-11 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+            <FaWallet className="text-white text-lg" />
           </div>
-          <span className="text-sm font-bold tracking-tight text-slate-100 group-hover:text-white transition-colors">
-            Expense Tracker
-          </span>
+
+          <div>
+            <h2 className="text-white font-bold text-lg">
+              SpendWise
+            </h2>
+
+            <p className="text-slate-400 text-xs hidden sm:block">
+              Smart Expense Tracker
+            </p>
+          </div>
         </Link>
 
-        {/* Desktop Links */}
-        {token && (
-          <div className="hidden md:flex items-center space-x-1">
-            <Link
-              to="/dashboard"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${isActive("/dashboard") ? "bg-slate-900 text-indigo-400" : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                }`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/analytics"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${isActive("/analytics") ? "bg-slate-900 text-indigo-400" : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                }`}
-            >
-              Analytics
-            </Link>
-          </div>
-        )}
-
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center space-x-4">
-          {token ? (
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 px-4 py-2 rounded-xl transition-all duration-200 font-medium text-sm text-slate-200 hover:text-white cursor-pointer select-none"
-              >
-                <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs font-bold border border-indigo-500/30">
-                  E
-                </div>
-                <span>Account</span>
-              </button>
-
-              {/* Dropdown Modal */}
-              {dropdownOpen && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute right-0 mt-2.5 w-44 bg-slate-950 border border-slate-900 rounded-xl shadow-xl overflow-hidden z-20 transition-all duration-200 origin-top-right p-1 animate-fade-in">
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center px-3 py-2 w-full text-left rounded-lg text-sm text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition duration-150 cursor-pointer"
-                    >
-                      <FaSignOutAlt className="mr-2.5" /> Logout
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center space-x-3">
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-4">
+          {!loggedIn ? (
+            <>
               <Link
                 to="/login"
-                className="flex items-center space-x-1.5 px-4 py-2 text-slate-300 hover:text-white text-sm font-medium transition-colors"
+                className="px-5 py-2 rounded-xl border border-slate-700 text-slate-300 hover:border-indigo-500 hover:text-white transition"
               >
-                <FaSignInAlt className="text-slate-400" />
-                <span>Login</span>
+                Login
               </Link>
+
               <Link
                 to="/register"
-                className="flex items-center space-x-1.5 px-4 py-2 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-sm font-semibold shadow-md shadow-indigo-600/15 transition-all duration-300 transform hover:-translate-y-0.5"
+                className="px-5 py-2 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 text-white hover:scale-105 transition"
               >
-                <FaUser size={10} />
-                <span>Register</span>
+                Register
               </Link>
-            </div>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/dashboard"
+                className="text-slate-300 hover:text-indigo-400 transition"
+              >
+                Dashboard
+              </Link>
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white transition"
+              >
+                <FaSignOutAlt />
+                Logout
+              </button>
+            </>
           )}
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Mobile Button */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white focus:outline-none relative z-50 transition-colors"
+          className="md:hidden text-white text-2xl"
+          onClick={() => setMenuOpen(!menuOpen)}
         >
-          {mobileMenuOpen ? <FaTimes size={14} /> : <FaBars size={14} />}
+          {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <>
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute top-16 left-0 right-0 bg-slate-950 border-b border-slate-900 px-6 py-6 flex flex-col space-y-3 md:hidden z-40 shadow-2xl animate-fade-in-down">
-            {token ? (
-              <>
-                <Link
-                  to="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-indigo-400 font-medium transition-colors"
-                >
-                  <span>Dashboard</span>
-                </Link>
-                <Link
-                  to="/analytics"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center space-x-3 p-3 rounded-xl hover:bg-slate-900 text-slate-300 hover:text-indigo-400 font-medium transition-colors"
-                >
-                  <span>Analytics</span>
-                </Link>
-                <div className="h-px bg-slate-900 my-1" />
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-3 p-3 w-full text-left rounded-xl hover:bg-rose-950/20 text-rose-400 font-medium transition-colors"
-                >
-                  <FaSignOutAlt />
-                  <span>Logout</span>
-                </button>
-              </>
-            ) : (
-              <div className="flex flex-col space-y-3 pt-2">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center space-x-2 p-3 border border-slate-800 rounded-xl text-slate-300 hover:text-white font-medium transition-colors"
-                >
-                  <FaSignInAlt />
-                  <span>Login</span>
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center space-x-2 p-3 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-600/20 transition-colors"
-                >
-                  <FaUser size={11} />
-                  <span>Register Free</span>
-                </Link>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-    </nav>
+      {/* Mobile Menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? "max-h-96" : "max-h-0"
+          }`}
+      >
+        <div className="bg-slate-900 border-t border-slate-800 px-6 py-5 flex flex-col gap-4">
+
+          {loggedIn && (
+            <Link
+              to="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="text-slate-300 hover:text-indigo-400"
+            >
+              Dashboard
+            </Link>
+          )}
+
+          {!loggedIn ? (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className="text-center px-5 py-3 rounded-xl border border-slate-700 text-white"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                onClick={() => setMenuOpen(false)}
+                className="text-center px-5 py-3 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 text-white"
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="flex justify-center items-center gap-2 px-5 py-3 rounded-xl bg-red-600 text-white"
+            >
+              <FaSignOutAlt />
+              Logout
+            </button>
+          )}
+        </div>
+      </div>
+    </header>
   );
 };
 

@@ -8,9 +8,15 @@ const API = axios.create({
 // Auth
 export const registerUser = (data) => API.post("/auth/register", data);
 export const loginUser = (data) => API.post("/auth/login", data);
-export const forgotPassword = (data) => API.post("/auth/forgot-password", data);
+export const logoutUser = () => API.post("/auth/logout");
+export const getProfile = () => API.get("/auth/profile");
+
+export const forgotPassword = (data) =>
+  API.post("/auth/forgot-password", data);
+
 export const resetPassword = (token, data) =>
   API.post(`/auth/reset-password/${token}`, data);
+
 
 // Expenses
 export const getExpenses = () => API.get("/expenses");
