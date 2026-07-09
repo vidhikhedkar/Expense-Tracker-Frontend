@@ -1,4 +1,4 @@
-# 💰 SpendWise - Expense Tracker Frontend
+# 💰 Expense Tracker Frontend
 
 A modern and responsive Expense Tracker frontend built with **React.js**, **Tailwind CSS**, and **Ant Design**. The application helps users manage their daily expenses, visualize monthly spending, and securely access their personal dashboard.
 
