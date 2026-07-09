@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Footer  from "./components/Footer";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </>
   );
 }

@@ -182,10 +182,7 @@ const Home = () => {
                 </Link>
             </div>
 
-            {/* FOOTER */}
-            <footer className="border-t border-slate-900/80 bg-slate-950/50 py-8 text-center text-xs text-slate-600 px-4">
-                &copy; 2026 Smart Finance Dashboard Corp. All rights reserved.
-            </footer>
+            
         </div>
     );
 };
